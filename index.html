@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PINKWIN - Secure Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background-color: #0F0F12;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 0, 122, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .pink-glow {
+            box-shadow: 0 0 15px rgba(255, 0, 122, 0.4);
+        }
+
+        .pink-glow-hover:hover {
+            box-shadow: 0 0 25px rgba(255, 0, 122, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .bg-pink-gradient {
+            background: linear-gradient(135deg, #FF007A 0%, #E91E63 100%);
+        }
+
+        .custom-checkbox:checked {
+            background-color: #FF007A;
+            border-color: #FF007A;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-toast {
+            animation: slideIn 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 relative overflow-x-hidden">
+
+    <div class="absolute top-10 left-10 w-72 h-72 bg-[#FF007A] opacity-10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-10 right-10 w-96 h-96 bg-[#E91E63] opacity-10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <div class="w-full max-w-md glass-card rounded-2xl p-6 sm:p-8 relative z-10">
+        
+        <div class="flex items-center justify-between mb-6">
+            <button class="text-gray-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-arrow-left text-lg"></i>
+            </button>
+            
+            <div class="flex items-center gap-2">
+                <span class="text-2xl font-black tracking-wider text-transparent bg-clip-text bg-pink-gradient">
+                    PINK<span class="text-white">WIN</span>
+                </span>
+            </div>
+
+            <select class="bg-white/5 border border-white/10 text-xs text-gray-300 rounded-lg px-2 py-1 outline-none focus:border-[#FF007A]">
+                <option value="en" class="bg-[#0F0F12]">🇺🇸 EN</option>
+                <option value="bn" class="bg-[#0F0F12]">🇧🇩 BN</option>
+            </select>
+        </div>
+
+        <div class="relative flex bg-black/40 p-1 rounded-xl mb-6 border border-white/5">
+            <div id="tabIndicator" class="absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-pink-gradient rounded-lg transition-all duration-300 ease-in-out"></div>
+            <button id="phoneTabBtn" onclick="switchTab('phone')" class="relative z-10 w-1/2 py-2.5 text-xs font-semibold text-white transition-colors">
+                <i class="fa-solid fa-mobile-screen mr-1"></i> Phone
+            </button>
+            <button id="emailTabBtn" onclick="switchTab('email')" class="relative z-10 w-1/2 py-2.5 text-xs font-semibold text-gray-400 transition-colors">
+                <i class="fa-regular fa-envelope mr-1"></i> Email
+            </button>
+        </div>
+
+        <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4">
+            <div id="phoneInputField">
+                <label class="block text-xs text-gray-400 mb-1">Phone Number</label>
+                <div class="flex">
+                    <select id="countryCode" class="bg-white/5 border border-r-0 border-white/10 text-xs text-gray-300 rounded-l-xl px-3 outline-none focus:border-[#FF007A]">
+                        <option value="+880" class="bg-[#0F0F12]">+880 (BD)</option>
+                        <option value="+91" class="bg-[#0F0F12]">+91 (IN)</option>
+                    </select>
+                    <input type="tel" id="phoneNumber" placeholder="1700000000" 
+                        class="w-full bg-white/5 border border-white/10 rounded-r-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-[#FF007A] transition-all">
+                </div>
+            </div>
+
+            <div id="emailInputField" class="hidden">
+                <label class="block text-xs text-gray-400 mb-1">Email Address</label>
+                <input type="email" id="emailAddress" placeholder="example@mail.com" 
+                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-[#FF007A] transition-all">
+            </div>
+
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Set Password</label>
+                <div class="relative">
+                    <input type="password" id="password" placeholder="••••••••" 
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-[#FF007A] transition-all">
+                    <button type="button" onclick="togglePasswordVisibility('password', 'eyeIcon1')" class="absolute right-4 top-3.5 text-gray-400 hover:text-white">
+                        <i id="eyeIcon1" class="fa-regular fa-eye-slash text-sm"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Confirm Password</label>
+                <div class="relative">
+                    <input type="password" id="confirmPassword" placeholder="••••••••" oninput="checkPasswordMatch()"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-[#FF007A] transition-all">
+                    <button type="button" onclick="togglePasswordVisibility('confirmPassword', 'eyeIcon2')" class="absolute right-4 top-3.5 text-gray-400 hover:text-white">
+                        <i id="eyeIcon2" class="fa-regular fa-eye-slash text-sm"></i>
+                    </button>
+                </div>
+                <p id="passwordMatchMsg" class="text-[10px] mt-1 hidden"></p>
+            </div>
+
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Invite Code <span class="text-gray-500">(Optional)</span></label>
+                <input type="text" id="inviteCode" placeholder="e.g. PINK2026" 
+                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-[#FF007A] transition-all">
+            </div>
+
+            <div class="flex items-center gap-2 pt-1">
+                <input type="checkbox" id="termsCheck" class="w-4 h-4 custom-checkbox rounded bg-white/5 border-white/20 outline-none accent-[#FF007A]">
+                <label for="termsCheck" class="text-xs text-gray-400">
+                    I agree to the <a href="#" class="text-[#FF007A] hover:underline">Privacy Policy & Terms</a>
+                </label>
+            </div>
+
+            <button type="submit" 
+                class="w-full py-3.5 rounded-xl bg-pink-gradient font-bold text-sm tracking-wide text-white uppercase pink-glow pink-glow-hover transition-all duration-300 mt-2">
+                Register
+            </button>
+        </form>
+
+        <div class="text-center mt-6">
+            <p class="text-xs text-gray-400">
+                Already have an account? 
+                <a href="#" class="text-[#FF007A] font-semibold hover:underline">Login here</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://my-website-o8np.onrender.com';
+        let currentTab = 'phone';
+
+        function switchTab(type) {
+            currentTab = type;
+            const tabIndicator = document.getElementById('tabIndicator');
+            const phoneBtn = document.getElementById('phoneTabBtn');
+            const emailBtn = document.getElementById('emailTabBtn');
+            const phoneInput = document.getElementById('phoneInputField');
+            const emailInput = document.getElementById('emailInputField');
+
+            if (type === 'phone') {
+                tabIndicator.style.left = '4px';
+                phoneBtn.classList.add('text-white');
+                phoneBtn.classList.remove('text-gray-400');
+                emailBtn.classList.add('text-gray-400');
+                emailBtn.classList.remove('text-white');
+                phoneInput.classList.remove('hidden');
+                emailInput.classList.add('hidden');
+            } else {
+                tabIndicator.style.left = 'calc(50%)';
+                emailBtn.classList.add('text-white');
+                emailBtn.classList.remove('text-gray-400');
+                phoneBtn.classList.add('text-gray-400');
+                phoneBtn.classList.remove('text-white');
+                emailInput.classList.remove('hidden');
+                phoneInput.classList.add('hidden');
+            }
+        }
+
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        }
+
+        function checkPasswordMatch() {
+            const pass = document.getElementById('password').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+            const msg = document.getElementById('passwordMatchMsg');
+
+            if (!confirmPass) {
+                msg.classList.add('hidden');
+                return;
+            }
+
+            msg.classList.remove('hidden');
+            if (pass === confirmPass) {
+                msg.textContent = '✓ Passwords match';
+                msg.className = 'text-[10px] mt-1 text-green-400';
+            } else {
+                msg.textContent = '✕ Passwords do not match';
+                msg.className = 'text-[10px] mt-1 text-red-400';
+            }
+        }
+
+        function showToast(message, type = 'error') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-600' : 'bg-[#FF007A]';
+            
+            toast.className = `${bgColor} text-white text-xs px-4 py-3 rounded-xl shadow-lg animate-toast flex items-center gap-2 min-w-[200px] border border-white/20`;
+            toast.innerHTML = `
+                <i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+
+            const pass = document.getElementById('password').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+            const termsChecked = document.getElementById('termsCheck').checked;
+            const inviteCode = document.getElementById('inviteCode').value;
+
+            let phoneNumber = null;
+            let email = null;
+
+            if (currentTab === 'phone') {
+                const phoneVal = document.getElementById('phoneNumber').value;
+                const countryCode = document.getElementById('countryCode').value;
+                if (!phoneVal || phoneVal.length < 8) {
+                    showToast('Please enter a valid phone number');
+                    return;
+                }
+                phoneNumber = countryCode + phoneVal;
+            } else {
+                email = document.getElementById('emailAddress').value;
+                if (!email || !email.includes('@')) {
+                    showToast('Please enter a valid email address');
+                    return;
+                }
+            }
+
+            if (!pass || pass.length < 6) {
+                showToast('Password must be at least 6 characters');
+                return;
+            }
+
+            if (pass !== confirmPass) {
+                showToast('Passwords do not match');
+                return;
+            }
+
+            if (!termsChecked) {
+                showToast('Please accept Terms & Privacy Policy');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phoneNumber, email, password: pass, inviteCode })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast('Registration successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                } else {
+                    showToast(data.message || 'Registration failed');
+                }
+            } catch (err) {
+                showToast('Server connection error. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>
