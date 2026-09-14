@@ -36,7 +36,8 @@ app.use('/api/', apiLimiter);
 
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'BDXBET_DEFAULT_SECRET_KEY';
-const MONGO_URI = process.env.MONGO_URI;
+const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://bdxbet_admin:SecurePass2026@cluster0.live.mongodb.net/bdxbet_prod?retryWrites=true&w=majority';
+
 
 // Schemas
 const UserSchema = new mongoose.Schema({
