@@ -1,306 +1,982 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PINKWIN - Secure Portal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        body {
-            background-color: #0F0F12;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BDXbet — Account</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 0, 122, 0.15);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-        }
+  :root{
+    --navy-deep: #060911;
+    --navy-card: #10182b;
+    --gold: #f0a93c;
+    --gold-bright: #ffcf70;
+    --gold-dim: #8a6a2f;
+    --ember: #ff6a2b;
+    --line: rgba(240,169,60,0.18);
+    --text-dim: #8a93a8;
+    --danger: #ff5c5c;
+    --success: #4ade80;
+  }
 
-        .pink-glow {
-            box-shadow: 0 0 15px rgba(255, 0, 122, 0.4);
-        }
+  *{ box-sizing: border-box; }
 
-        .pink-glow-hover:hover {
-            box-shadow: 0 0 25px rgba(255, 0, 122, 0.7);
-            transform: translateY(-2px);
-        }
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:'Inter', sans-serif;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(240,169,60,0.10), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 90% 100%, rgba(255,106,43,0.07), transparent 60%),
+      var(--navy-deep);
+    color:#eef1f6;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 16px;
+    position:relative;
+    overflow-x:hidden;
+  }
 
-        .bg-pink-gradient {
-            background: linear-gradient(135deg, #FF007A 0%, #E91E63 100%);
-        }
+  body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    background:
+      repeating-linear-gradient(115deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 90px);
+    pointer-events:none;
+  }
 
-        .custom-checkbox:checked {
-            background-color: #FF007A;
-            border-color: #FF007A;
-        }
+  .wrap{
+    width:100%;
+    max-width:400px;
+    position:relative;
+    z-index:1;
+  }
 
-        @keyframes slideIn {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .animate-toast {
-            animation: slideIn 0.3s ease-out forwards;
-        }
-    </style>
+  .brand{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin-bottom:28px;
+  }
+
+  .crest{
+    width:76px;
+    height:76px;
+    border-radius:50%;
+    border:2px solid var(--gold);
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(160deg, #151d30, #0a0e18);
+    box-shadow: 0 0 0 4px rgba(240,169,60,0.08), 0 8px 24px rgba(0,0,0,0.5);
+    margin-bottom:14px;
+  }
+  .crest svg{ width:36px; height:36px; }
+
+  .brand-name{
+    font-family:'Rajdhani', sans-serif;
+    font-weight:700;
+    font-size:30px;
+    letter-spacing:0.5px;
+    line-height:1;
+  }
+  .brand-name span{ color:var(--gold); }
+
+  .brand-tag{
+    margin-top:6px;
+    font-size:12px;
+    color:var(--text-dim);
+    letter-spacing:1.5px;
+  }
+  .brand-tag b{ color:#c7ccd6; font-weight:600; }
+
+  .card{
+    background:linear-gradient(180deg, var(--navy-card), #0c1322);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:32px 28px 26px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.03) inset,
+      0 20px 50px -20px rgba(0,0,0,0.7);
+  }
+
+  .card h1{
+    font-family:'Rajdhani', sans-serif;
+    font-size:22px;
+    font-weight:600;
+    margin:0 0 4px;
+    color:#fff;
+  }
+  .card p.sub{
+    margin:0 0 24px;
+    font-size:13.5px;
+    color:var(--text-dim);
+  }
+
+  .field{ margin-bottom:16px; }
+  .field label{
+    display:block;
+    font-size:12.5px;
+    color:#a7afc0;
+    margin-bottom:6px;
+  }
+  .field .input-row{
+    position:relative;
+    display:flex;
+    align-items:center;
+  }
+  .field input{
+    width:100%;
+    background:#0a0f1c;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:8px;
+    padding:11px 40px 11px 14px;
+    color:#fff;
+    font-size:14.5px;
+    font-family:inherit;
+    outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .field input::placeholder{ color:#4d5568; }
+  .field input:focus{
+    border-color:var(--gold-dim);
+    box-shadow:0 0 0 3px rgba(240,169,60,0.12);
+  }
+  .field input:read-only{
+    color:var(--gold-bright);
+    border-color:var(--gold-dim);
+  }
+  .field input.err{
+    border-color:var(--danger);
+    box-shadow:0 0 0 3px rgba(255,92,92,0.12);
+  }
+  .field .icon{
+    position:absolute;
+    right:13px;
+    color:#4d5568;
+    pointer-events:none;
+  }
+  .field .icon svg{ width:17px; height:17px; display:block; }
+  .field .err-text{
+    margin-top:6px;
+    font-size:11.5px;
+    color:var(--danger);
+    display:none;
+  }
+  .field .err-text.show{ display:block; }
+
+  .toggle-pw{
+    pointer-events:auto;
+    cursor:pointer;
+    background:none;
+    border:none;
+    padding:0;
+  }
+  .toggle-pw svg{ color:#6b7386; }
+  .toggle-pw:hover svg{ color:var(--gold); }
+
+  .row-between{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin:2px 0 22px;
+    font-size:12.5px;
+  }
+
+  .remember{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    color:var(--text-dim);
+    cursor:pointer;
+    user-select:none;
+  }
+  .remember input{
+    appearance:none;
+    width:15px; height:15px;
+    border:1px solid #454e63;
+    border-radius:4px;
+    background:#0a0f1c;
+    cursor:pointer;
+    position:relative;
+    flex-shrink:0;
+  }
+  .remember input:checked{
+    background:var(--gold);
+    border-color:var(--gold);
+  }
+  .remember input:checked::after{
+    content:'';
+    position:absolute;
+    left:4px; top:1px;
+    width:4px; height:8px;
+    border:solid #1a1206;
+    border-width:0 2px 2px 0;
+    transform:rotate(45deg);
+  }
+
+  a.link{
+    color:var(--gold);
+    text-decoration:none;
+    cursor:pointer;
+  }
+  a.link:hover{ color:var(--gold-bright); }
+
+  .btn-primary{
+    width:100%;
+    border:none;
+    border-radius:9px;
+    padding:13px;
+    font-family:'Rajdhani', sans-serif;
+    font-size:16.5px;
+    font-weight:700;
+    letter-spacing:0.4px;
+    color:#1a1206;
+    background:linear-gradient(135deg, var(--gold-bright), var(--gold) 55%, var(--ember));
+    cursor:pointer;
+    box-shadow:0 8px 20px -6px rgba(240,169,60,0.45);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn-primary:hover{
+    transform:translateY(-1px);
+    box-shadow:0 10px 24px -6px rgba(240,169,60,0.6);
+  }
+  .btn-primary:active{ transform:translateY(0); }
+
+  .btn-ghost{
+    width:100%;
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:9px;
+    padding:12px;
+    font-family:'Rajdhani', sans-serif;
+    font-size:15px;
+    font-weight:600;
+    color:#c7ccd6;
+    background:transparent;
+    cursor:pointer;
+    margin-top:10px;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .btn-ghost:hover{ border-color:var(--gold-dim); color:var(--gold-bright); }
+
+  .foot{
+    text-align:center;
+    font-size:13px;
+    color:var(--text-dim);
+    margin:0;
+  }
+
+  .legal{
+    margin-top:22px;
+    text-align:center;
+    font-size:11px;
+    color:#4d5568;
+    line-height:1.6;
+  }
+
+  .back-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:18px;
+    font-size:13px;
+    color:var(--text-dim);
+    cursor:pointer;
+    width:fit-content;
+  }
+  .back-row:hover{ color:var(--gold); }
+  .back-row svg{ width:16px; height:16px; }
+
+  .otp-boxes{
+    display:flex;
+    gap:10px;
+    margin-bottom:6px;
+  }
+  .otp-boxes input{
+    width:100%;
+    text-align:center;
+    font-size:20px;
+    font-weight:600;
+    padding:12px 0;
+    background:#0a0f1c;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:8px;
+    color:#fff;
+    outline:none;
+  }
+  .otp-boxes input.err{ border-color:var(--danger); }
+  .otp-boxes input:focus{ border-color:var(--gold-dim); box-shadow:0 0 0 3px rgba(240,169,60,0.12); }
+
+  .otp-msg{
+    font-size:12px;
+    color:var(--danger);
+    margin:6px 0 16px;
+    display:none;
+  }
+  .otp-msg.show{ display:block; }
+  .otp-msg.ok{ color:var(--success); }
+
+  .demo-note{
+    background:rgba(240,169,60,0.08);
+    border:1px dashed var(--gold-dim);
+    border-radius:8px;
+    padding:9px 12px;
+    font-size:11.5px;
+    color:var(--gold-bright);
+    margin-bottom:18px;
+    line-height:1.5;
+  }
+
+  .ref-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:rgba(74,222,128,0.1);
+    border:1px solid rgba(74,222,128,0.3);
+    color:var(--success);
+    font-size:11.5px;
+    padding:5px 10px;
+    border-radius:6px;
+    margin-top:6px;
+  }
+
+  .success-icon{
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    background:rgba(74,222,128,0.1);
+    border:2px solid var(--success);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:4px auto 18px;
+  }
+  .success-icon svg{ width:30px; height:30px; }
+
+  .center-text{ text-align:center; }
+
+  .home-stat{
+    display:flex;
+    justify-content:space-between;
+    background:#0a0f1c;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:8px;
+    padding:14px;
+    margin-bottom:18px;
+  }
+  .home-stat div span{ display:block; }
+  .home-stat .label{ font-size:11.5px; color:var(--text-dim); margin-bottom:4px; }
+  .home-stat .value{ font-family:'Rajdhani',sans-serif; font-size:20px; font-weight:700; color:var(--gold-bright); }
+
+  .notice{
+    background:linear-gradient(135deg, rgba(240,169,60,0.14), rgba(255,106,43,0.06));
+    border:1px solid var(--gold-dim);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:14px;
+  }
+  .notice.welcome{
+    text-align:center;
+    background:rgba(74,222,128,0.08);
+    border-color:rgba(74,222,128,0.35);
+  }
+  .notice.welcome .t{ font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700; color:var(--success); margin-bottom:2px; }
+  .notice.welcome .s{ font-size:12.5px; color:var(--text-dim); }
+
+  .pin-card{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .pin-card .pin-icon{
+    width:38px; height:38px;
+    border-radius:50%;
+    background:rgba(240,169,60,0.15);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .pin-card .pin-icon svg{ width:19px; height:19px; }
+  .pin-card .pin-text{ flex:1; }
+  .pin-card .pin-text .t{ font-size:13.5px; font-weight:600; color:#fff; margin-bottom:2px; }
+  .pin-card .pin-text .s{ font-size:11.5px; color:var(--text-dim); }
+  .pin-card.done{ background:rgba(74,222,128,0.08); border-color:rgba(74,222,128,0.35); }
+  .pin-card.done .pin-icon{ background:rgba(74,222,128,0.15); }
+  .pin-card-btn{
+    border:1px solid var(--gold-dim);
+    color:var(--gold-bright);
+    background:transparent;
+    font-size:12px;
+    font-family:'Rajdhani',sans-serif;
+    font-weight:700;
+    padding:7px 12px;
+    border-radius:7px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .pin-card-btn:hover{ background:rgba(240,169,60,0.1); }
+
+  .screen{ display:none; }
+  .screen.active{ display:block; }
+</style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 relative overflow-x-hidden">
+<body>
 
-    <div class="absolute top-10 left-10 w-72 h-72 bg-[#FF007A] opacity-10 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute bottom-10 right-10 w-96 h-96 bg-[#E91E63] opacity-10 rounded-full blur-3xl pointer-events-none"></div>
-
-    <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2"></div>
-
-    <div class="w-full max-w-md glass-card rounded-2xl p-6 sm:p-8 relative z-10">
-        
-        <div class="flex items-center justify-between mb-6">
-            <button class="text-gray-400 hover:text-white transition-colors">
-                <i class="fa-solid fa-arrow-left text-lg"></i>
-            </button>
-            
-            <div class="flex items-center gap-2">
-                <span class="text-2xl font-black tracking-wider text-transparent bg-clip-text bg-pink-gradient">
-                    PINK<span class="text-white">WIN</span>
-                </span>
-            </div>
-
-            <select class="bg-white/5 border border-white/10 text-xs text-gray-300 rounded-lg px-2 py-1 outline-none focus:border-[#FF007A]">
-                <option value="en" class="bg-[#0F0F12]">🇺🇸 EN</option>
-                <option value="bn" class="bg-[#0F0F12]">🇧🇩 BN</option>
-            </select>
-        </div>
-
-        <div class="relative flex bg-black/40 p-1 rounded-xl mb-6 border border-white/5">
-            <div id="tabIndicator" class="absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-pink-gradient rounded-lg transition-all duration-300 ease-in-out"></div>
-            <button id="phoneTabBtn" onclick="switchTab('phone')" class="relative z-10 w-1/2 py-2.5 text-xs font-semibold text-white transition-colors">
-                <i class="fa-solid fa-mobile-screen mr-1"></i> Phone
-            </button>
-            <button id="emailTabBtn" onclick="switchTab('email')" class="relative z-10 w-1/2 py-2.5 text-xs font-semibold text-gray-400 transition-colors">
-                <i class="fa-regular fa-envelope mr-1"></i> Email
-            </button>
-        </div>
-
-        <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4">
-            <div id="phoneInputField">
-                <label class="block text-xs text-gray-400 mb-1">Phone Number</label>
-                <div class="flex">
-                    <select id="countryCode" class="bg-white/5 border border-r-0 border-white/10 text-xs text-gray-300 rounded-l-xl px-3 outline-none focus:border-[#FF007A]">
-                        <option value="+880" class="bg-[#0F0F12]">+880 (BD)</option>
-                        <option value="+91" class="bg-[#0F0F12]">+91 (IN)</option>
-                    </select>
-                    <input type="tel" id="phoneNumber" placeholder="1700000000" 
-                        class="w-full bg-white/5 border border-white/10 rounded-r-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-[#FF007A] transition-all">
-                </div>
-            </div>
-
-            <div id="emailInputField" class="hidden">
-                <label class="block text-xs text-gray-400 mb-1">Email Address</label>
-                <input type="email" id="emailAddress" placeholder="example@mail.com" 
-                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-[#FF007A] transition-all">
-            </div>
-
-            <div>
-                <label class="block text-xs text-gray-400 mb-1">Set Password</label>
-                <div class="relative">
-                    <input type="password" id="password" placeholder="••••••••" 
-                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-[#FF007A] transition-all">
-                    <button type="button" onclick="togglePasswordVisibility('password', 'eyeIcon1')" class="absolute right-4 top-3.5 text-gray-400 hover:text-white">
-                        <i id="eyeIcon1" class="fa-regular fa-eye-slash text-sm"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-xs text-gray-400 mb-1">Confirm Password</label>
-                <div class="relative">
-                    <input type="password" id="confirmPassword" placeholder="••••••••" oninput="checkPasswordMatch()"
-                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-[#FF007A] transition-all">
-                    <button type="button" onclick="togglePasswordVisibility('confirmPassword', 'eyeIcon2')" class="absolute right-4 top-3.5 text-gray-400 hover:text-white">
-                        <i id="eyeIcon2" class="fa-regular fa-eye-slash text-sm"></i>
-                    </button>
-                </div>
-                <p id="passwordMatchMsg" class="text-[10px] mt-1 hidden"></p>
-            </div>
-
-            <div>
-                <label class="block text-xs text-gray-400 mb-1">Invite Code <span class="text-gray-500">(Optional)</span></label>
-                <input type="text" id="inviteCode" placeholder="e.g. PINK2026" 
-                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-[#FF007A] transition-all">
-            </div>
-
-            <div class="flex items-center gap-2 pt-1">
-                <input type="checkbox" id="termsCheck" class="w-4 h-4 custom-checkbox rounded bg-white/5 border-white/20 outline-none accent-[#FF007A]">
-                <label for="termsCheck" class="text-xs text-gray-400">
-                    I agree to the <a href="#" class="text-[#FF007A] hover:underline">Privacy Policy & Terms</a>
-                </label>
-            </div>
-
-            <button type="submit" 
-                class="w-full py-3.5 rounded-xl bg-pink-gradient font-bold text-sm tracking-wide text-white uppercase pink-glow pink-glow-hover transition-all duration-300 mt-2">
-                Register
-            </button>
-        </form>
-
-        <div class="text-center mt-6">
-            <p class="text-xs text-gray-400">
-                Already have an account? 
-                <a href="#" class="text-[#FF007A] font-semibold hover:underline">Login here</a>
-            </p>
-        </div>
+<div class="wrap">
+  <div class="brand">
+    <div class="crest">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L20 5.5V11C20 16 16.5 19.7 12 21C7.5 19.7 4 16 4 11V5.5L12 2Z" stroke="#f0a93c" stroke-width="1.4"/>
+        <path d="M8 12.5L10.5 15L16 9" stroke="#ffcf70" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </div>
+    <div class="brand-name">BDX<span>bet</span></div>
+    <div class="brand-tag">LIVE SPORTS <b>·</b> BETTING <b>·</b> GAMING</div>
+  </div>
 
+  <!-- LOGIN -->
+  <div class="screen active" id="screen-login">
+    <div class="card">
+      <div id="login-success-banner" class="notice welcome" style="display:none;">
+        <div class="t">রেজিস্ট্রেশন সফল হয়েছে ✅</div>
+        <div class="s">এখন আপনার নম্বর ও পাসওয়ার্ড দিয়ে লগইন করুন</div>
+      </div>
+
+      <h1>একাউন্টে প্রবেশ করুন</h1>
+      <p class="sub">খেলা শুরুর আগে সাইন ইন করে নিন</p>
+
+      <div class="field">
+        <label>ইউজারনেম বা মোবাইল নম্বর</label>
+        <div class="input-row">
+          <input id="login-id" type="text" placeholder="আপনার আইডি লিখুন">
+          <span class="icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="1.5"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>পাসওয়ার্ড</label>
+        <div class="input-row">
+          <input id="pw-login" type="password" placeholder="পাসওয়ার্ড লিখুন">
+          <button type="button" class="icon toggle-pw" onclick="togglePw('pw-login', this)" aria-label="Show password">
+            <svg class="eyeIcon" viewBox="0 0 24 24" fill="none"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+        <div class="err-text" id="login-err">ভুল নম্বর অথবা পাসওয়ার্ড</div>
+      </div>
+
+      <div class="row-between">
+        <label class="remember">
+          <input type="checkbox">
+          মনে রাখুন
+        </label>
+        <a class="link" onclick="goTo('forgot-phone')">পাসওয়ার্ড ভুলে গেছেন?</a>
+      </div>
+
+      <button type="button" class="btn-primary" onclick="doLogin()">লগইন করুন</button>
+
+      <p class="foot" style="margin-top:18px;">নতুন এখানে? <a class="link" onclick="goTo('register')">একাউন্ট খুলুন</a></p>
+    </div>
+    <p class="legal">লগইন করার মাধ্যমে আপনি বয়স ১৮+ বলে নিশ্চিত করছেন এবং শর্তাবলী মেনে নিচ্ছেন। দায়িত্বশীলভাবে খেলুন।</p>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="screen" id="screen-register">
+    <div class="card">
+      <div class="back-row" onclick="goTo('login')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        লগইনে ফিরে যান
+      </div>
+      <h1>নতুন একাউন্ট খুলুন</h1>
+      <p class="sub">মাত্র কয়েক ধাপে রেজিস্ট্রেশন সম্পন্ন করুন</p>
+
+      <div class="field">
+        <label>মোবাইল নম্বর</label>
+        <div class="input-row">
+          <input id="reg-phone" type="tel" placeholder="০১XXXXXXXXX">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>পাসওয়ার্ড</label>
+        <div class="input-row">
+          <input id="pw-reg1" type="password" placeholder="পাসওয়ার্ড দিন">
+          <button type="button" class="icon toggle-pw" onclick="togglePw('pw-reg1', this)">
+            <svg class="eyeIcon" viewBox="0 0 24 24" fill="none"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>পাসওয়ার্ড আবার লিখুন</label>
+        <div class="input-row">
+          <input id="pw-reg2" type="password" placeholder="পাসওয়ার্ড নিশ্চিত করুন">
+          <button type="button" class="icon toggle-pw" onclick="togglePw('pw-reg2', this)">
+            <svg class="eyeIcon" viewBox="0 0 24 24" fill="none"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+        <div class="err-text" id="reg-pw-err">পাসওয়ার্ড দুটি মিলছে না</div>
+      </div>
+
+      <div class="field">
+        <label>রেফার কোড <span style="color:#4d5568;">(অপশনাল)</span></label>
+        <div class="input-row">
+          <input id="ref-code" type="text" placeholder="থাকলে বসিয়ে দিন">
+        </div>
+        <div id="ref-note" style="display:none;" class="ref-badge">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          ইনভাইট লিংক থেকে রেফার কোড স্বয়ংক্রিয়ভাবে বসেছে
+        </div>
+      </div>
+
+      <button type="button" class="btn-primary" onclick="doRegister()">রেজিস্ট্রেশন করুন</button>
+    </div>
+    <p class="legal">রেজিস্ট্রেশন করার মাধ্যমে আপনি বয়স ১৮+ বলে নিশ্চিত করছেন এবং শর্তাবলী মেনে নিচ্ছেন।</p>
+  </div>
+
+  <!-- FORGOT PASSWORD - STEP 1: PHONE -->
+  <div class="screen" id="screen-forgot-phone">
+    <div class="card">
+      <div class="back-row" onclick="goTo('login')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        লগইনে ফিরে যান
+      </div>
+      <h1>পাসওয়ার্ড রিসেট করুন</h1>
+      <p class="sub">আপনার নিবন্ধিত মোবাইল নম্বর দিন, আমরা একটি OTP পাঠাবো</p>
+
+      <div class="field">
+        <label>মোবাইল নম্বর</label>
+        <div class="input-row">
+          <input id="reset-phone" type="tel" placeholder="০১XXXXXXXXX">
+        </div>
+      </div>
+      <button type="button" class="btn-primary" onclick="sendResetOtp()">OTP পাঠান</button>
+    </div>
+  </div>
+
+  <!-- FORGOT PASSWORD - STEP 2: OTP -->
+  <div class="screen" id="screen-forgot-otp">
+    <div class="card">
+      <div class="back-row" onclick="goTo('forgot-phone')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        পিছনে যান
+      </div>
+      <h1>OTP যাচাই করুন</h1>
+      <p class="sub" id="otp-sent-to">আপনার নম্বরে ৪-সংখ্যার OTP পাঠানো হয়েছে</p>
+
+      <div class="demo-note">ডেমো: সঠিক OTP হলো <b>1234</b></div>
+
+      <div class="otp-boxes">
+        <input id="otp1" type="text" inputmode="numeric" maxlength="1" oninput="otpMove(this,1)">
+        <input id="otp2" type="text" inputmode="numeric" maxlength="1" oninput="otpMove(this,2)">
+        <input id="otp3" type="text" inputmode="numeric" maxlength="1" oninput="otpMove(this,3)">
+        <input id="otp4" type="text" inputmode="numeric" maxlength="1" oninput="otpMove(this,4)">
+      </div>
+      <div class="otp-msg" id="otp-msg">ওটিপি ভুল</div>
+
+      <button type="button" class="btn-primary" onclick="verifyOtp()">যাচাই করুন</button>
+      <button type="button" class="btn-ghost" onclick="goTo('forgot-phone')">OTP আবার পাঠান</button>
+    </div>
+  </div>
+
+  <!-- FORGOT PASSWORD - STEP 3: NEW PASSWORD -->
+    <div class="screen" id="screen-forgot-newpw">
+    <div class="card">
+      <h1>নতুন পাসওয়ার্ড দিন</h1>
+      <p class="sub">যাচাই সম্পন্ন হয়েছে, এখন নতুন পাসওয়ার্ড সেট করুন</p>
+
+      <div class="field">
+        <label>নতুন পাসওয়ার্ড</label>
+        <div class="input-row">
+          <input id="pw-new1" type="password" placeholder="নতুন পাসওয়ার্ড লিখুন">
+          <button type="button" class="icon toggle-pw" onclick="togglePw('pw-new1', this)">
+            <svg class="eyeIcon" viewBox="0 0 24 24" fill="none"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="field">
+        <label>নতুন পাসওয়ার্ড নিশ্চিত করুন</label>
+        <div class="input-row">
+          <input id="pw-new2" type="password" placeholder="আবার লিখুন">
+          <button type="button" class="icon toggle-pw" onclick="togglePw('pw-new2', this)">
+            <svg class="eyeIcon" viewBox="0 0 24 24" fill="none"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+        <div class="err-text" id="new-pw-err">পাসওয়ার্ড দুটি মিলছে না</div>
+      </div>
+      <button type="button" class="btn-primary" onclick="doResetPassword()">পাসওয়ার্ড পরিবর্তন করুন</button>
+    </div>
+  </div>
+
+  <!-- RESET SUCCESS -->
+  <div class="screen" id="screen-reset-success">
+    <div class="card center-text">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h1>পাসওয়ার্ড পরিবর্তন হয়েছে</h1>
+      <p class="sub">নতুন পাসওয়ার্ড দিয়ে এখন লগইন করুন</p>
+      <button type="button" class="btn-primary" onclick="goTo('login')">লগইন করুন</button>
+    </div>
+  </div>
+
+  <!-- HOME (post-login) -->
+  <div class="screen" id="screen-home">
+    <div class="card">
+      <div class="notice welcome">
+        <div class="t">স্বাগতম, প্লেয়ার 👋</div>
+        <div class="s">আপনি সফলভাবে লগইন করেছেন</div>
+      </div>
+
+      <div id="pin-notice" class="notice pin-card">
+        <div class="pin-icon">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="9" rx="2" stroke="#f0a93c" stroke-width="1.6"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="#f0a93c" stroke-width="1.6"/></svg>
+        </div>
+        <div class="pin-text">
+          <div class="t">পিন সেটআপ করুন</div>
+          <div class="s">টাকা তোলার জন্য ৬-ডিজিটের পিন প্রয়োজন</div>
+        </div>
+        <button type="button" class="pin-card-btn" onclick="goTo('pin-setup')">সেট করুন</button>
+      </div>
+
+      <div class="home-stat">
+        <div>
+          <span class="label">ব্যালেন্স</span>
+          <span class="value">৳ 0.00</span>
+        </div>
+        <div>
+          <span class="label">স্ট্যাটাস</span>
+          <span class="value" style="color:#4ade80;">সক্রিয়</span>
+        </div>
+      </div>
+
+      <button type="button" class="btn-primary" onclick="handleWithdraw()">টাকা উত্তোলন করুন</button>
+      <div class="err-text" id="withdraw-msg" style="text-align:center; margin-top:8px;">প্রথমে ৬-ডিজিটের পিন সেট করুন</div>
+
+      <p class="foot" style="margin:16px 0 14px;">এটি হোম পেজের একটি নমুনা — আসল স্পোর্টস ও গেমিং কন্টেন্ট এখানে বসবে।</p>
+      <button type="button" class="btn-ghost" onclick="goTo('login')">লগআউট</button>
+    </div>
+  </div>
+
+  <!-- PIN SETUP -->
+  <div class="screen" id="screen-pin-setup">
+    <div class="card">
+      <div class="back-row" onclick="goTo('home')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        হোমে ফিরে যান
+      </div>
+      <h1>৬-ডিজিটের পিন সেট করুন</h1>
+      <p class="sub">টাকা উত্তোলনের সময় এই পিন প্রয়োজন হবে</p>
+
+      <label style="display:block; font-size:12.5px; color:#a7afc0; margin-bottom:6px;">নতুন পিন দিন</label>
+      <div class="otp-boxes" style="margin-bottom:18px;">
+        <input id="pin1" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'pin',1)">
+        <input id="pin2" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'pin',2)">
+        <input id="pin3" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'pin',3)">
+        <input id="pin4" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'pin',4)">
+        <input id="pin5" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'pin',5)">
+        <input id="pin6" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'pin',6)">
+      </div>
+
+      <label style="display:block; font-size:12.5px; color:#a7afc0; margin-bottom:6px;">পিন আবার দিন</label>
+      <div class="otp-boxes">
+        <input id="pinc1" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'pinc',1)">
+        <input id="pinc2" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'pinc',2)">
+        <input id="pinc3" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'pinc',3)">
+        <input id="pinc4" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'pinc',4)">
+        <input id="pinc5" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'pinc',5)">
+        <input id="pinc6" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'pinc',6)">
+      </div>
+      <div class="otp-msg" id="pin-msg">পিন দুটি মিলছে না</div>
+
+      <button type="button" class="btn-primary" style="margin-top:16px;" onclick="savePin()">পিন সেট করুন</button>
+    </div>
+  </div>
+
+  <!-- WITHDRAW PIN CHECK -->
+  <div class="screen" id="screen-withdraw">
+    <div class="card">
+      <div class="back-row" onclick="goTo('home')">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        হোমে ফিরে যান
+      </div>
+      <h1>পিন দিয়ে নিশ্চিত করুন</h1>
+      <p class="sub">টাকা উত্তোলন সম্পন্ন করতে আপনার ৬-ডিজিটের পিন দিন</p>
+
+      <div class="otp-boxes">
+        <input id="wpin1" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'wpin',1)">
+        <input id="wpin2" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'wpin',2)">
+        <input id="wpin3" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'wpin',3)">
+        <input id="wpin4" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'wpin',4)">
+        <input id="wpin5" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'wpin',5)">
+        <input id="wpin6" type="password" inputmode="numeric" maxlength="1" oninput="pinMove(this,'wpin',6)">
+      </div>
+      <div class="otp-msg" id="wpin-msg">পিন ভুল হয়েছে</div>
+
+      <button type="button" class="btn-primary" style="margin-top:16px;" onclick="verifyWithdrawPin()">নিশ্চিত করুন</button>
+    </div>
+  </div>
+
+  <!-- WITHDRAW SUCCESS -->
+  <div class="screen" id="screen-withdraw-success">
+    <div class="card center-text">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h1>উত্তোলন অনুরোধ সফল</h1>
+      <p class="sub">আপনার টাকা তোলার অনুরোধ গ্রহণ করা হয়েছে</p>
+      <button type="button" class="btn-primary" onclick="goTo('home')">হোমে ফিরে যান</button>
+    </div>
+  </div>
+
+</div>
     <script>
-        const API_BASE_URL = 'https://folder-website.onrender.com';
-        
-        let currentTab = 'phone';
+var registeredUser = null;
+try{ registeredUser = JSON.parse(localStorage.getItem('bdxbet_user') || 'null'); }catch(e){}
+var userPin = localStorage.getItem('bdxbet_pin') || null;
 
-        function switchTab(type) {
-            currentTab = type;
-            const tabIndicator = document.getElementById('tabIndicator');
-            const phoneBtn = document.getElementById('phoneTabBtn');
-            const emailBtn = document.getElementById('emailTabBtn');
-            const phoneInput = document.getElementById('phoneInputField');
-            const emailInput = document.getElementById('emailInputField');
+function goTo(screen){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  window.scrollTo(0,0);
 
-            if (type === 'phone') {
-                tabIndicator.style.left = '4px';
-                phoneBtn.classList.add('text-white');
-                phoneBtn.classList.remove('text-gray-400');
-                emailBtn.classList.add('text-gray-400');
-                emailBtn.classList.remove('text-white');
-                phoneInput.classList.remove('hidden');
-                emailInput.classList.add('hidden');
-            } else {
-                tabIndicator.style.left = 'calc(50%)';
-                emailBtn.classList.add('text-white');
-                emailBtn.classList.remove('text-gray-400');
-                phoneBtn.classList.add('text-gray-400');
-                phoneBtn.classList.remove('text-white');
-                emailInput.classList.remove('hidden');
-                phoneInput.classList.add('hidden');
-            }
-        }
+  if(screen === 'register'){ checkRefCode(); }
 
-        function togglePasswordVisibility(inputId, iconId) {
-            const input = document.getElementById(inputId);
-            const icon = document.getElementById(iconId);
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            }
-        }
+  if(screen === 'forgot-otp'){
+    document.getElementById('otp-msg').classList.remove('show');
+    ['otp1','otp2','otp3','otp4'].forEach(id => {
+      document.getElementById(id).value = '';
+      document.getElementById(id).classList.remove('err');
+    });
+    document.getElementById('otp1').focus();
+  }
 
-        function checkPasswordMatch() {
-            const pass = document.getElementById('password').value;
-            const confirmPass = document.getElementById('confirmPassword').value;
-            const msg = document.getElementById('passwordMatchMsg');
+  if(screen === 'home'){ refreshPinNotice(); }
 
-            if (!confirmPass) {
-                msg.classList.add('hidden');
-                return;
-            }
+  if(screen === 'pin-setup'){
+    ['pin1','pin2','pin3','pin4','pin5','pin6','pinc1','pinc2','pinc3','pinc4','pinc5','pinc6'].forEach(id=>{
+      document.getElementById(id).value='';
+      document.getElementById(id).classList.remove('err');
+    });
+    document.getElementById('pin-msg').classList.remove('show');
+    document.getElementById('pin1').focus();
+  }
 
-            msg.classList.remove('hidden');
-            if (pass === confirmPass) {
-                msg.textContent = '✓ Passwords match';
-                msg.className = 'text-[10px] mt-1 text-green-400';
-            } else {
-                msg.textContent = '✕ Passwords do not match';
-                msg.className = 'text-[10px] mt-1 text-red-400';
-            }
-        }
+  if(screen === 'withdraw'){
+    ['wpin1','wpin2','wpin3','wpin4','wpin5','wpin6'].forEach(id=>{
+      document.getElementById(id).value='';
+      document.getElementById(id).classList.remove('err');
+    });
+    document.getElementById('wpin-msg').classList.remove('show');
+    document.getElementById('wpin1').focus();
+  }
+}
 
-        function showToast(message, type = 'error') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            const bgColor = type === 'success' ? 'bg-green-600' : 'bg-[#FF007A]';
-            
-            toast.className = `${bgColor} text-white text-xs px-4 py-3 rounded-xl shadow-lg animate-toast flex items-center gap-2 min-w-[200px] border border-white/20`;
-            toast.innerHTML = `
-                <i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i>
-                <span>${message}</span>
-            `;
+function togglePw(id, btn){
+  const pw = document.getElementById(id);
+  const eye = btn.querySelector('.eyeIcon');
+  if(pw.type === 'password'){
+    pw.type = 'text';
+    eye.innerHTML = '<path d="M3 3l18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 12s3.5-7 10-7c1.7 0 3.2.4 4.5 1M22 12s-3.5 7-10 7c-1.7 0-3.2-.4-4.5-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/>';
+  } else {
+    pw.type = 'password';
+    eye.innerHTML = '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/>';
+  }
+}
 
-            container.appendChild(toast);
+function checkRefCode(){
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref');
+  const input = document.getElementById('ref-code');
+  const note = document.getElementById('ref-note');
+  if(ref){
+    input.value = ref;
+    input.readOnly = true;
+    note.style.display = 'inline-flex';
+  } else {
+    input.readOnly = false;
+    note.style.display = 'none';
+  }
+}
 
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
+function doRegister(){
+  const phone = document.getElementById('reg-phone').value.trim();
+  const p1 = document.getElementById('pw-reg1');
+  const p2 = document.getElementById('pw-reg2');
+  const err = document.getElementById('reg-pw-err');
 
-        async function handleRegister(e) {
-            e.preventDefault();
+  if(!phone || !p1.value || !p2.value){
+    p2.classList.add('err');
+    err.textContent = 'সব ঘর পূরণ করুন';
+    err.classList.add('show');
+    return;
+  }
+  if(p1.value !== p2.value){
+    p2.classList.add('err');
+    err.textContent = 'পাসওয়ার্ড দুটি মিলছে না';
+    err.classList.add('show');
+    return;
+  }
+  p2.classList.remove('err');
+  err.classList.remove('show');
 
-            const pass = document.getElementById('password').value;
-            const confirmPass = document.getElementById('confirmPassword').value;
-            const termsChecked = document.getElementById('termsCheck').checked;
-            const inviteCode = document.getElementById('inviteCode').value;
+  registeredUser = { phone: phone, password: p1.value };
+  localStorage.setItem('bdxbet_user', JSON.stringify(registeredUser));
 
-            let phoneNumber = null;
-            let email = null;
+  goTo('login');
+  document.getElementById('login-success-banner').style.display = 'block';
+  document.getElementById('login-id').value = phone;
+}
 
-            if (currentTab === 'phone') {
-                const phoneVal = document.getElementById('phoneNumber').value;
-                const countryCode = document.getElementById('countryCode').value;
-                if (!phoneVal || phoneVal.length < 8) {
-                    showToast('Please enter a valid phone number');
-                    return;
-                }
-                phoneNumber = countryCode + phoneVal;
-            } else {
-                email = document.getElementById('emailAddress').value;
-                if (!email || !email.includes('@')) {
-                    showToast('Please enter a valid email address');
-                    return;
-                }
-            }
+function doLogin(){
+  const id = document.getElementById('login-id').value.trim();
+  const pw = document.getElementById('pw-login').value;
+  const err = document.getElementById('login-err');
 
-            if (!pass || pass.length < 6) {
-                showToast('Password must be at least 6 characters');
-                return;
-            }
+  if(registeredUser && id === registeredUser.phone && pw === registeredUser.password){
+    err.classList.remove('show');
+    goTo('home');
+    return;
+  }
+  err.classList.add('show');
+}
 
-            if (pass !== confirmPass) {
-                showToast('Passwords do not match');
-                return;
-            }
+function sendResetOtp(){
+  const phone = document.getElementById('reset-phone').value.trim();
+  document.getElementById('otp-sent-to').textContent = phone
+    ? phone + ' নম্বরে ৪-সংখ্যার OTP পাঠানো হয়েছে'
+    : 'আপনার নম্বরে ৪-সংখ্যার OTP পাঠানো হয়েছে';
+  goTo('forgot-otp');
+}
 
-            if (!termsChecked) {
-                showToast('Please accept Terms & Privacy Policy');
-                return;
-            }
+function otpMove(el, idx){
+  el.value = el.value.replace(/[^0-9]/g, '');
+  if(el.value && idx < 4){ document.getElementById('otp' + (idx+1)).focus(); }
+}
 
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phoneNumber, email, password: pass, inviteCode })
-                });
+function verifyOtp(){
+  const code = ['otp1','otp2','otp3','otp4'].map(id => document.getElementById(id).value).join('');
+  const msg = document.getElementById('otp-msg');
+  const boxes = ['otp1','otp2','otp3','otp4'].map(id => document.getElementById(id));
 
-                const data = await response.json();
+  if(code.length < 4){
+    msg.textContent = 'অনুগ্রহ করে সম্পূর্ণ OTP দিন';
+    msg.classList.remove('ok'); msg.classList.add('show');
+    boxes.forEach(b => b.classList.add('err'));
+    return;
+  }
+  if(code === '1234'){
+    msg.textContent = 'OTP সঠিক হয়েছে';
+    msg.classList.add('ok'); msg.classList.add('show');
+    boxes.forEach(b => b.classList.remove('err'));
+    setTimeout(() => goTo('forgot-newpw'), 500);
+  } else {
+    msg.textContent = 'ওটিপি ভুল';
+    msg.classList.remove('ok'); msg.classList.add('show');
+    boxes.forEach(b => b.classList.add('err'));
+  }
+}
 
-                if (response.ok) {
-                    showToast('Registration successful! Redirecting...', 'success');
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 1500);
-                } else {
-                    showToast(data.message || 'Registration failed');
-                }
-            } catch (err) {
-                showToast('Server connection error. Please try again.');
-            }
-        }
-    </script>
+function doResetPassword(){
+  const p1 = document.getElementById('pw-new1');
+  const p2 = document.getElementById('pw-new2');
+  const err = document.getElementById('new-pw-err');
+  if(!p1.value || !p2.value || p1.value !== p2.value){
+    p2.classList.add('err');
+    err.classList.add('show');
+    return;
+  }
+  p2.classList.remove('err');
+  err.classList.remove('show');
+  if(registeredUser){
+    registeredUser.password = p1.value;
+    localStorage.setItem('bdxbet_user', JSON.stringify(registeredUser));
+  }
+  goTo('reset-success');
+}
+
+function refreshPinNotice(){
+  const box = document.getElementById('pin-notice');
+  if(userPin){
+    box.classList.add('done');
+    box.querySelector('.pin-text .t').textContent = 'পিন সেট করা হয়েছে ✅';
+    box.querySelector('.pin-text .s').textContent = 'টাকা তোলার জন্য প্রস্তুত';
+    box.querySelector('.pin-card-btn').textContent = 'পরিবর্তন করুন';
+  } else {
+    box.classList.remove('done');
+    box.querySelector('.pin-text .t').textContent = 'পিন সেটআপ করুন';
+    box.querySelector('.pin-text .s').textContent = 'টাকা তোলার জন্য ৬-ডিজিটের পিন প্রয়োজন';
+    box.querySelector('.pin-card-btn').textContent = 'সেট করুন';
+  }
+  document.getElementById('withdraw-msg').classList.remove('show');
+}
+
+function pinMove(el, prefix, idx){
+  el.value = el.value.replace(/[^0-9]/g, '');
+  if(el.value && idx < 6){ document.getElementById(prefix + (idx+1)).focus(); }
+}
+
+function savePin(){
+  const pin = ['pin1','pin2','pin3','pin4','pin5','pin6'].map(id => document.getElementById(id).value).join('');
+  const confirmPin = ['pinc1','pinc2','pinc3','pinc4','pinc5','pinc6'].map(id => document.getElementById(id).value).join('');
+  const msg = document.getElementById('pin-msg');
+  const allBoxes = ['pin1','pin2','pin3','pin4','pin5','pin6','pinc1','pinc2','pinc3','pinc4','pinc5','pinc6'].map(id=>document.getElementById(id));
+
+  if(pin.length < 6 || confirmPin.length < 6){
+    msg.textContent = 'সম্পূর্ণ ৬-ডিজিটের পিন দিন';
+    msg.classList.remove('ok'); msg.classList.add('show');
+    return;
+  }
+  if(pin !== confirmPin){
+    msg.textContent = 'পিন দুটি মিলছে না';
+    msg.classList.remove('ok'); msg.classList.add('show');
+    ['pinc1','pinc2','pinc3','pinc4','pinc5','pinc6'].forEach(id=>document.getElementById(id).classList.add('err'));
+    return;
+  }
+  userPin = pin;
+  localStorage.setItem('bdxbet_pin', userPin);
+  msg.textContent = 'পিন সফলভাবে সেট হয়েছে';
+  msg.classList.add('ok'); msg.classList.add('show');
+  allBoxes.forEach(b=>b.classList.remove('err'));
+  setTimeout(() => goTo('home'), 600);
+}
+
+function handleWithdraw(){
+  const msg = document.getElementById('withdraw-msg');
+  if(!userPin){
+    msg.classList.add('show');
+    return;
+  }
+  msg.classList.remove('show');
+  goTo('withdraw');
+}
+
+function verifyWithdrawPin(){
+  const entered = ['wpin1','wpin2','wpin3','wpin4','wpin5','wpin6'].map(id => document.getElementById(id).value).join('');
+  const msg = document.getElementById('wpin-msg');
+  const boxes = ['wpin1','wpin2','wpin3','wpin4','wpin5','wpin6'].map(id=>document.getElementById(id));
+
+  if(entered.length < 6){
+    msg.textContent = 'সম্পূর্ণ পিন দিন';
+    msg.classList.remove('ok'); msg.classList.add('show');
+    return;
+  }
+  if(entered === userPin){
+    msg.classList.remove('show');
+    goTo('withdraw-success');
+  } else {
+    msg.textContent = 'পিন ভুল হয়েছে';
+    msg.classList.remove('ok'); msg.classList.add('show');
+    boxes.forEach(b=>b.classList.add('err'));
+  }
+}
+
+checkRefCode();
+</script>
+
 </body>
 </html>
