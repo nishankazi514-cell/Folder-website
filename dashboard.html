@@ -1,335 +1,206 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PINKWIN - User Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>BDXbet - ইউজার ড্যাশবোর্ড</title>
     <style>
-        body {
-            background-color: #0F0F12;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding-bottom: 80px;
+        :root {
+            --bg-dark: #0F0F12;
+            --card-surface: #18181C;
+            --neon-pink: #FF007A;
+            --rose-pink: #E91E63;
+            --text-main: #FFFFFF;
+            --text-sub: #9E9EA8;
+            --gold-accent: #FF9900;
         }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 0, 122, 0.15);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: var(--bg-dark); color: var(--text-main); padding-bottom: 75px; font-family: 'Segoe UI', Roboto, sans-serif; user-select: none; }
+
+        .top-navbar {
+            display: flex; justify-content: space-between; align-items: center; padding: 10px 16px;
+            background: rgba(24, 24, 28, 0.92); position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid rgba(255, 0, 122, 0.25); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
         }
 
-        .glass-nav {
-            background: rgba(15, 15, 18, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255, 0, 122, 0.2);
+        .brand-avatar-box { display: flex; align-items: center; gap: 10px; }
+        .nav-logo-svg { width: 36px; height: 36px; }
+
+        .wallet-pill {
+            background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 0, 122, 0.3);
+            border-radius: 20px; padding: 4px 12px; display: flex; align-items: center; gap: 6px; font-size: 12px;
         }
 
-        .pink-glow {
-            box-shadow: 0 0 15px rgba(255, 0, 122, 0.4);
+        .balance-val { color: #34C759; font-weight: 700; }
+        .refresh-icon { cursor: pointer; font-size: 11px; opacity: 0.8; transition: transform 0.4s ease; }
+        .refresh-icon:hover { transform: rotate(180deg); }
+        .spin { animation: spin 0.6s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .cta-group { display: flex; gap: 6px; }
+        .btn-cta {
+            padding: 6px 12px; border-radius: 16px; border: none; font-size: 11px; font-weight: 700;
+            color: var(--text-main); cursor: pointer; background: linear-gradient(135deg, var(--neon-pink), var(--rose-pink));
+            box-shadow: 0 2px 8px rgba(255, 0, 122, 0.3); text-decoration: none;
         }
 
-        .pink-glow-hover:hover {
-            box-shadow: 0 0 25px rgba(255, 0, 122, 0.7);
-            transform: translateY(-2px);
+        .slider-section { padding: 12px 16px; }
+        .banner-slide {
+            width: 100%; height: 140px; border-radius: 14px; background: linear-gradient(110deg, #2b0018, #000000 70%);
+            border: 1px solid rgba(255, 0, 122, 0.25); display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
         }
 
-        .bg-pink-gradient {
-            background: linear-gradient(135deg, #FF007A 0%, #E91E63 100%);
+        .banner-text { max-width: 65%; }
+        .banner-text h3 { font-size: 16px; color: var(--neon-pink); margin-bottom: 4px; }
+        .banner-text p { font-size: 11px; color: var(--text-sub); }
+
+        .ticker-bar {
+            background: rgba(255, 0, 122, 0.08); border-top: 1px solid rgba(255, 0, 122, 0.15);
+            border-bottom: 1px solid rgba(255, 0, 122, 0.15); padding: 6px 0; font-size: 11px; overflow: hidden;
+            color: var(--gold-accent); position: relative;
         }
 
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
+        .ticker-content { display: inline-block; white-space: nowrap; padding-left: 100%; animation: marquee 16s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        .category-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 16px; }
+        .cat-card {
+            background: var(--card-surface); border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px; padding: 10px 2px; text-align: center; cursor: pointer; transition: all 0.25s ease;
         }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+        .cat-card:hover, .cat-card.active { border-color: var(--neon-pink); box-shadow: 0 0 12px rgba(255, 0, 122, 0.35); transform: translateY(-2px); }
+        .cat-icon { font-size: 22px; display: block; margin-bottom: 4px; }
+        .cat-title { font-size: 10px; color: var(--text-sub); font-weight: 600; }
+        .cat-card.active .cat-title { color: var(--text-main); }
+
+        .app-bottom-bar {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 60px;
+            background: rgba(15, 15, 18, 0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(255, 0, 122, 0.25); display: flex; justify-content: space-around; align-items: center; z-index: 1000;
         }
 
-        @keyframes ticker {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-        .animate-ticker {
-            display: inline-block;
-            white-space: nowrap;
-            animation: ticker 25s linear infinite;
-        }
-        .animate-ticker:hover {
-            animation-play-state: paused;
-        }
+        .app-bar-node { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); text-decoration: none; font-size: 10px; gap: 2px; }
+        .app-bar-node.active { color: var(--neon-pink); text-shadow: 0 0 8px var(--neon-pink); }
+        .app-bar-node span { font-size: 18px; }
     </style>
 </head>
-<body class="min-h-screen relative overflow-x-hidden">
+<body>
 
-    <div class="fixed top-0 left-1/4 w-96 h-96 bg-[#FF007A] opacity-10 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="fixed bottom-20 right-10 w-80 h-80 bg-[#E91E63] opacity-10 rounded-full blur-3xl pointer-events-none"></div>
-
-    <div class="max-w-md mx-auto min-h-screen relative z-10">
-
-        <header class="sticky top-0 z-40 glass-nav px-4 py-3 flex items-center justify-between border-b border-white/5">
-            <div class="flex items-center gap-3">
-                <div class="relative">
-                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Nishan" alt="Avatar" class="w-10 h-10 rounded-full border border-[#FF007A] bg-black/40">
-                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#0F0F12] rounded-full"></span>
-                </div>
-                <div>
-                    <h4 class="text-xs font-bold text-white tracking-wide">Nishan Kazi</h4>
-                    <div class="flex items-center gap-1.5 mt-0.5">
-                        <span class="text-[10px] text-gray-400">Bal:</span>
-                        <span id="walletBalance" class="text-xs font-extrabold text-[#FF007A]">৳ 12,450.00</span>
-                        <button onclick="refreshBalance()" class="text-gray-400 hover:text-white transition-transform active:rotate-180 duration-300">
-                            <i id="refreshIcon" class="fa-solid fa-rotate-right text-[10px]"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-2">
-                <button class="px-3 py-1.5 text-xs font-bold text-white bg-pink-gradient rounded-lg pink-glow pink-glow-hover transition-all">
-                    <i class="fa-solid fa-wallet mr-1"></i> Deposit
-                </button>
-                <button class="px-3 py-1.5 text-xs font-semibold text-gray-300 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-all">
-                    Withdraw
-                </button>
-            </div>
-        </header>
-
-        <main class="p-4 space-y-5">
-
-            <div class="relative rounded-2xl overflow-hidden glass-card">
-                <div id="carouselContainer" class="flex transition-transform duration-500 ease-in-out w-full">
-                    <div class="min-w-full relative h-40 bg-gradient-to-r from-[#FF007A]/40 to-purple-900/40 p-5 flex flex-col justify-center">
-                        <span class="bg-[#FF007A] text-[10px] font-bold uppercase px-2 py-0.5 rounded text-white w-max mb-2">Exclusive Offer</span>
-                        <h3 class="text-lg font-black text-white leading-tight">100% WELCOME<br><span class="text-[#FF007A]">BONUS MATCH</span></h3>
-                        <p class="text-xs text-gray-300 mt-1">Deposit today & double your balance!</p>
-                    </div>
-                    <div class="min-w-full relative h-40 bg-gradient-to-r from-purple-900/40 to-[#E91E63]/40 p-5 flex flex-col justify-center">
-                        <span class="bg-[#E91E63] text-[10px] font-bold uppercase px-2 py-0.5 rounded text-white w-max mb-2">VIP Jackpot</span>
-                        <h3 class="text-lg font-black text-white leading-tight">WEEKLY MEGA<br><span class="text-[#FF007A]">PRIZE POOL</span></h3>
-                        <p class="text-xs text-gray-300 mt-1">Win up to ৳ 500,000 every Sunday.</p>
-                    </div>
-                    <div class="min-w-full relative h-40 bg-gradient-to-r from-pink-900/40 to-black/60 p-5 flex flex-col justify-center">
-                        <span class="bg-amber-500 text-[10px] font-bold uppercase px-2 py-0.5 rounded text-black w-max mb-2 font-black">Fast Cashout</span>
-                        <h3 class="text-lg font-black text-white leading-tight">INSTANT<br><span class="text-[#FF007A]">WITHDRAWALS</span></h3>
-                        <p class="text-xs text-gray-300 mt-1">bKash, Nagad & Rocket supported 24/7.</p>
-                    </div>
-                </div>
-                <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
-                    <span class="carousel-dot w-2 h-2 rounded-full bg-[#FF007A] transition-all"></span>
-                    <span class="carousel-dot w-2 h-2 rounded-full bg-white/30 transition-all"></span>
-                    <span class="carousel-dot w-2 h-2 rounded-full bg-white/30 transition-all"></span>
-                </div>
-            </div>
-
-            <div class="glass-card rounded-xl px-3 py-2 flex items-center gap-3 overflow-hidden text-xs">
-                <div class="flex items-center gap-1 text-[#FF007A] font-bold shrink-0">
-                    <i class="fa-solid fa-volume-high animate-pulse"></i>
-                    <span>Notice:</span>
-                </div>
-                <div class="overflow-hidden w-full relative">
-                    <div class="animate-ticker text-gray-300">
-                        🎉 User <span class="text-white font-semibold">User***49</span> just won <span class="text-[#FF007A] font-bold">৳ 25,000</span> in Slots! &nbsp;&nbsp;•&nbsp;&nbsp; 🚀 Instant deposits via bKash & Nagad are live 24/7. &nbsp;&nbsp;•&nbsp;&nbsp; 🏆 Weekly Tournament rewards distributed!
-                    </div>
-                </div>
-            </div>
-
-            <section>
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-sm font-bold text-white tracking-wide">Game Categories</h3>
-                    <a href="#" class="text-xs text-[#FF007A] hover:underline">View All</a>
-                </div>
-                <div class="grid grid-cols-5 gap-2">
-                    <button onclick="filterCategory(this)" class="category-btn glass-card border-[#FF007A] p-2.5 rounded-xl flex flex-col items-center gap-1 text-[#FF007A] transition-all scale-105">
-                        <i class="fa-solid fa-fire text-lg"></i>
-                        <span class="text-[10px] font-semibold">Popular</span>
-                    </button>
-                    <button onclick="filterCategory(this)" class="category-btn glass-card p-2.5 rounded-xl flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-all">
-                        <i class="fa-solid fa-gamepad text-lg"></i>
-                        <span class="text-[10px] font-semibold">Slots</span>
-                    </button>
-                    <button onclick="filterCategory(this)" class="category-btn glass-card p-2.5 rounded-xl flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-all">
-                        <i class="fa-solid fa-dice text-lg"></i>
-                        <span class="text-[10px] font-semibold">Casino</span>
-                    </button>
-                    <button onclick="filterCategory(this)" class="category-btn glass-card p-2.5 rounded-xl flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-all">
-                        <i class="fa-solid fa-trophy text-lg"></i>
-                        <span class="text-[10px] font-semibold">Sports</span>
-                    </button>
-                    <button onclick="filterCategory(this)" class="category-btn glass-card p-2.5 rounded-xl flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-all">
-                        <i class="fa-solid fa-[#FF007A] fa-[#E91E63] fa-clover text-lg"></i>
-                        <span class="text-[10px] font-semibold">Lottery</span>
-                    </button>
-                </div>
-            </section>
-
-            <section>
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-sm font-bold text-white tracking-wide">Hot & Trending Games</h3>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="glass-card rounded-xl overflow-hidden group hover:border-[#FF007A] transition-all cursor-pointer">
-                        <div class="h-28 bg-gradient-to-br from-pink-900/60 to-purple-900/60 relative flex items-center justify-center">
-                            <i class="fa-solid fa-plane-departure text-4xl text-[#FF007A] group-hover:scale-110 transition-transform"></i>
-                            <span class="absolute top-2 left-2 bg-[#FF007A] text-[9px] font-black px-1.5 py-0.5 rounded uppercase text-white">HOT</span>
-                        </div>
-                        <div class="p-2.5 flex items-center justify-between">
-                            <div>
-                                <h4 class="text-xs font-bold text-white">Aviator X</h4>
-                                <p class="text-[10px] text-gray-400">Crash Game</p>
-                            </div>
-                            <button class="w-7 h-7 rounded-full bg-pink-gradient text-white flex items-center justify-center text-xs pink-glow">
-                                <i class="fa-solid fa-play"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="glass-card rounded-xl overflow-hidden group hover:border-[#FF007A] transition-all cursor-pointer">
-                        <div class="h-28 bg-gradient-to-br from-rose-900/60 to-black relative flex items-center justify-center">
-                            <i class="fa-solid fa-gem text-4xl text-[#E91E63] group-hover:scale-110 transition-transform"></i>
-                            <span class="absolute top-2 left-2 bg-purple-600 text-[9px] font-black px-1.5 py-0.5 rounded uppercase text-white">NEW</span>
-                        </div>
-                        <div class="p-2.5 flex items-center justify-between">
-                            <div>
-                                <h4 class="text-xs font-bold text-white">Pink Fortune</h4>
-                                <p class="text-[10px] text-gray-400">5-Reel Slot</p>
-                            </div>
-                            <button class="w-7 h-7 rounded-full bg-pink-gradient text-white flex items-center justify-center text-xs pink-glow">
-                                <i class="fa-solid fa-play"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="glass-card rounded-xl overflow-hidden group hover:border-[#FF007A] transition-all cursor-pointer">
-                        <div class="h-28 bg-gradient-to-br from-indigo-900/60 to-pink-950/60 relative flex items-center justify-center">
-                            <i class="fa-solid fa-[#E91E63] fa-circle-dot text-4xl text-pink-400 group-hover:scale-110 transition-transform"></i>
-                        </div>
-                        <div class="p-2.5 flex items-center justify-between">
-                            <div>
-                                <h4 class="text-xs font-bold text-white">Roulette Live</h4>
-                                <p class="text-[10px] text-gray-400">Live Casino</p>
-                            </div>
-                            <button class="w-7 h-7 rounded-full bg-pink-gradient text-white flex items-center justify-center text-xs pink-glow">
-                                <i class="fa-solid fa-play"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="glass-card rounded-xl overflow-hidden group hover:border-[#FF007A] transition-all cursor-pointer">
-                        <div class="h-28 bg-gradient-to-br from-red-950/60 to-pink-900/60 relative flex items-center justify-center">
-                            <i class="fa-solid fa-football text-4xl text-[#FF007A] group-hover:scale-110 transition-transform"></i>
-                        </div>
-                        <div class="p-2.5 flex items-center justify-between">
-                            <div>
-                                <h4 class="text-xs font-bold text-white">Sports League</h4>
-                                <p class="text-[10px] text-gray-400">Live Betting</p>
-                            </div>
-                            <button class="w-7 h-7 rounded-full bg-pink-gradient text-white flex items-center justify-center text-xs pink-glow">
-                                <i class="fa-solid fa-play"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-        </main>
-
-        <nav class="fixed bottom-0 left-0 right-0 z-50 glass-nav max-w-md mx-auto">
-            <div class="flex items-center justify-around py-2">
-                <button onclick="setActiveNav(this)" class="nav-btn flex flex-col items-center gap-1 text-[#FF007A]">
-                    <i class="fa-solid fa-house text-lg"></i>
-                    <span class="text-[10px] font-bold">Home</span>
-                </button>
-                <button onclick="setActiveNav(this)" class="nav-btn flex flex-col items-center gap-1 text-gray-400 hover:text-white">
-                    <i class="fa-solid fa-chart-line text-lg"></i>
-                    <span class="text-[10px] font-semibold">Activity</span>
-                </button>
-                <button onclick="setActiveNav(this)" class="nav-btn flex flex-col items-center gap-1 text-gray-400 hover:text-white relative">
-                    <div class="w-10 h-10 -mt-5 rounded-full bg-pink-gradient flex items-center justify-center text-white pink-glow">
-                        <i class="fa-solid fa-gift text-lg"></i>
-                    </div>
-                    <span class="text-[10px] font-semibold">Promo</span>
-                </button>
-                <button onclick="setActiveNav(this)" class="nav-btn flex flex-col items-center gap-1 text-gray-400 hover:text-white">
-                    <i class="fa-solid fa-wallet text-lg"></i>
-                    <span class="text-[10px] font-semibold">Wallet</span>
-                </button>
-                <button onclick="setActiveNav(this)" class="nav-btn flex flex-col items-center gap-1 text-gray-400 hover:text-white">
-                    <i class="fa-solid fa-user text-lg"></i>
-                    <span class="text-[10px] font-semibold">Account</span>
-                </button>
-            </div>
-        </nav>
-
+<div class="top-navbar">
+    <div class="brand-avatar-box">
+        <svg class="nav-logo-svg" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="46" fill="#0F0F12" stroke="#FF9900" stroke-width="3"/>
+            <path d="M50 14 L58 28 L74 28 L62 38 L66 54 L50 44 L34 54 L38 38 L26 28 L42 28 Z" fill="#FF9900"/>
+            <path d="M28 48 L50 38 L72 48 L68 74 L50 82 L32 74 Z" fill="#FF007A"/>
+            <text x="50" y="64" font-weight="900" font-size="15" fill="#FFF" text-anchor="middle">BDX</text>
+        </svg>
+        <div class="wallet-pill">
+            <span id="userNameDisplay">👤 Player</span>
+            <span class="balance-val" id="userBalanceDisplay">৳ 0.00</span>
+            <span class="refresh-icon" id="refreshBtn" title="ব্যালেন্স রিফ্রেশ" onclick="reloadBalance()">🔄</span>
+        </div>
     </div>
+    <div class="cta-group">
+        <a href="wallet.html" class="btn-cta">ডিপোজিট</a>
+        <a href="wallet.html" class="btn-cta" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">উইথড্র</a>
+    </div>
+</div>
 
-    <script>
-        let currentSlide = 0;
-        const container = document.getElementById('carouselContainer');
-        const dots = document.querySelectorAll('.carousel-dot');
-        const totalSlides = dots.length;
+<div class="slider-section">
+    <div class="banner-slide">
+        <div class="banner-text">
+            <h3>BDXbet স্পেশাল বোনাস</h3>
+            <p>প্রথম ডিপোজিটে পান ২০০% পর্যন্ত তাৎক্ষণিক ক্যাশব্যাক বোনাস!</p>
+        </div>
+        <div style="font-size: 38px;">🎁</div>
+    </div>
+</div>
 
-        function slideNext() {
-            currentSlide = (currentSlide + 1) % totalSlides;
-            updateCarousel();
+<div class="ticker-bar">
+    <div class="ticker-content">
+        🔥 অভিনন্দন Player_802! এভিয়েটর গেম থেকে জিতেছে ৳১,২০,০০০ | ⚽ বিপিএল লাইভ স্পোর্টস বেটিং এভেইলএবল সেরা অডস সহ!
+    </div>
+</div>
+
+<div class="category-grid">
+    <div class="cat-card active" onclick="selectCategory(this)">
+        <span class="cat-icon">🎰</span>
+        <span class="cat-title"> স্লট</span>
+    </div>
+    <div class="cat-card" onclick="selectCategory(this)">
+        <span class="cat-icon">🎲</span>
+        <span class="cat-title">লাইভ ক্যাসিনো</span>
+    </div>
+    <div class="cat-card" onclick="selectCategory(this)">
+        <span class="cat-icon">🏏</span>
+        <span class="cat-title">স্পোর্টস</span>
+    </div>
+    <div class="cat-card" onclick="selectCategory(this)">
+        <span class="cat-icon">🎟️</span>
+        <span class="cat-title">লটারি</span>
+    </div>
+    <div class="cat-card" onclick="selectCategory(this)">
+        <span class="cat-icon">🚀</span>
+        <span class="cat-title">মিনি গেমস</span>
+    </div>
+</div>
+
+<div class="app-bottom-bar">
+    <a href="dashboard.html" class="app-bar-node active">
+        <span>🏠</span> হোম
+    </a>
+    <a href="#" class="app-bar-node">
+        <span>📊</span> অ্যাক্টিভিটি
+    </a>
+    <a href="#" class="app-bar-node">
+        <span>🎁</span> প্রোমোশন
+    </a>
+    <a href="wallet.html" class="app-bar-node">
+        <span>💳</span> ওয়ালেট
+    </a>
+    <a href="#" class="app-bar-node">
+        <span>👤</span> অ্যাকাউন্ট
+    </a>
+</div>
+
+<script>
+    function selectCategory(element) {
+        document.querySelectorAll('.cat-card').forEach(card => card.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    async function reloadBalance() {
+        const refreshIcon = document.getElementById('refreshBtn');
+        refreshIcon.classList.add('spin');
+        const token = localStorage.getItem('bdx_token');
+        
+        if(!token) {
+            window.location.href = 'index.html';
+            return;
         }
 
-        function updateCarousel() {
-            container.style.transform = `translateX(-${currentSlide * 100}%)`;
-            dots.forEach((dot, idx) => {
-                if (idx === currentSlide) {
-                    dot.classList.add('bg-[#FF007A]');
-                    dot.classList.remove('bg-white/30');
-                } else {
-                    dot.classList.remove('bg-[#FF007A]');
-                    dot.classList.add('bg-white/30');
-                }
+        try {
+            const res = await fetch('/api/v1/user/profile', {
+                headers: { 'Authorization': 'Bearer ' + token }
             });
+            const data = await res.json();
+            if(data.success) {
+                document.getElementById('userBalanceDisplay').innerText = '৳ ' + data.user.balance.toFixed(2);
+                document.getElementById('userNameDisplay').innerText = '👤 ' + data.user.phoneOrEmail.split('@')[0];
+            } else {
+                window.location.href = 'index.html';
+            }
+        } catch(e) {
+            console.log("Balance Sync Error");
+        } finally {
+            setTimeout(() => refreshIcon.classList.remove('spin'), 600);
         }
+    }
 
-        setInterval(slideNext, 4000);
-
-        function refreshBalance() {
-            const icon = document.getElementById('refreshIcon');
-            const balance = document.getElementById('walletBalance');
-            
-            icon.classList.add('fa-spin');
-            balance.style.opacity = '0.5';
-
-            setTimeout(() => {
-                icon.classList.remove('fa-spin');
-                balance.style.opacity = '1';
-                balance.textContent = '৳ 12,450.00';
-            }, 800);
-        }
-
-        function filterCategory(selectedBtn) {
-            const allBtns = document.querySelectorAll('.category-btn');
-            allBtns.forEach(btn => {
-                btn.classList.remove('border-[#FF007A]', 'text-[#FF007A]', 'scale-105');
-                btn.classList.add('text-gray-400');
-            });
-
-            selectedBtn.classList.add('border-[#FF007A]', 'text-[#FF007A]', 'scale-105');
-            selectedBtn.classList.remove('text-gray-400');
-        }
-
-        function setActiveNav(selectedBtn) {
-            const navBtns = document.querySelectorAll('.nav-btn');
-            navBtns.forEach(btn => {
-                btn.classList.remove('text-[#FF007A]');
-                btn.classList.add('text-gray-400');
-            });
-
-            selectedBtn.classList.add('text-[#FF007A]');
-            selectedBtn.classList.remove('text-gray-400');
-        }
-    </script>
+    // অটো লোড প্রোফাইল ডাটা
+    reloadBalance();
+</script>
 </body>
-</html>
+        </html>
+        
