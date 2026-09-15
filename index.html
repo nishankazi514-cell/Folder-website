@@ -1,116 +1,392 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BDXbet - Register & Login</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    body { background-color: #0F0F12; color: #FFFFFF; font-family: system-ui, sans-serif; }
-    .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
-    .glass-input { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12); }
-    .glass-input:focus { border-color: #FF007A; box-shadow: 0 0 10px rgba(255, 0, 122, 0.25); }
-  </style>
-</head>
-<body class="min-h-screen flex flex-col justify-between items-center p-4 sm:p-6 bg-[#0F0F12]">
-
-  <div class="w-full max-w-md mx-auto flex flex-col flex-1 justify-center">
-    <header class="flex items-center justify-between mb-6">
-      <button class="w-10 h-10 flex items-center justify-center rounded-xl glass-card text-gray-300">
-        <i data-lucide="arrow-left" class="w-5 h-5"></i>
-      </button>
-      <h1 class="text-2xl font-black text-white">BDX<span class="text-[#FF007A]">bet</span></h1>
-      <select class="glass-card text-xs py-2 px-3 rounded-xl text-white bg-[#0F0F12]">
-        <option value="en">EN</option>
-        <option value="bn">BN</option>
-      </select>
-    </header>
-
-    <!-- Register Card -->
-    <main id="registerCard" class="glass-card rounded-2xl p-6 shadow-2xl relative overflow-hidden">
-      <div class="mb-6 text-center">
-        <h2 class="text-xl font-bold text-white mb-1">Create an Account</h2>
-        <p class="text-xs text-gray-400">Join BDXbet for live sports & gaming</p>
-      </div>
-
-      <form onsubmit="handleAuth(event, 'register')" class="space-y-4">
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-300">Phone or Email</label>
-          <input type="text" id="regAccount" required placeholder="01700000000 or mail@example.com" class="w-full glass-input text-xs py-3 px-3 rounded-xl text-white outline-none">
-        </div>
-
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-300">Password</label>
-          <input type="password" id="regPassword" required placeholder="Enter password" class="w-full glass-input text-xs py-3 px-3 rounded-xl text-white outline-none">
-        </div>
-
-        <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-[#FF007A] to-[#FF4D9E] text-white text-sm font-bold rounded-xl shadow-lg">REGISTER</button>
-      </form>
-
-      <div class="mt-6 text-center text-xs text-gray-400">
-        Already have an account? 
-        <button type="button" onclick="toggleForm('login')" class="text-[#FF007A] font-semibold hover:underline">Log In</button>
-      </div>
-    </main>
-
-    <!-- Login Card -->
-    <main id="loginCard" class="glass-card rounded-2xl p-6 shadow-2xl relative overflow-hidden hidden">
-      <div class="mb-6 text-center">
-        <h2 class="text-xl font-bold text-white mb-1">Welcome Back!</h2>
-        <p class="text-xs text-gray-400">Log in to your BDXbet account</p>
-      </div>
-
-      <form onsubmit="handleAuth(event, 'login')" class="space-y-4">
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-300">Phone or Email</label>
-          <input type="text" id="loginAccount" required placeholder="Enter phone or email" class="w-full glass-input text-xs py-3 px-3 rounded-xl text-white outline-none">
-        </div>
-
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-300">Password</label>
-          <input type="password" id="loginPassword" required placeholder="Enter password" class="w-full glass-input text-xs py-3 px-3 rounded-xl text-white outline-none">
-        </div>
-
-        <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-[#FF007A] to-[#FF4D9E] text-white text-sm font-bold rounded-xl shadow-lg">LOG IN</button>
-      </form>
-
-      <div class="mt-6 text-center text-xs text-gray-400">
-        Don't have an account? 
-        <button type="button" onclick="toggleForm('register')" class="text-[#FF007A] font-semibold hover:underline">Register</button>
-      </div>
-    </main>
-  </div>
-
-  <script>
-    lucide.createIcons();
-
-    function toggleForm(view) {
-      document.getElementById('registerCard').classList.toggle('hidden', view === 'login');
-      document.getElementById('loginCard').classList.toggle('hidden', view === 'register');
-    }
-
-    async function handleAuth(event, type) {
-      event.preventDefault();
-      const isReg = type === 'register';
-      const phoneOrEmail = document.getElementById(isReg ? 'regAccount' : 'loginAccount').value;
-      const password = document.getElementById(isReg ? 'regPassword' : 'loginPassword').value;
-
-      try {
-        const res = await fetch(`/api/v1/auth/${type}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phoneOrEmail, password })
-        });
-        const data = await res.json();
-        alert(data.message);
-        if (data.success && !isReg) {
-          localStorage.setItem('bdx_token', data.token);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDXbet - রেজিস্ট্রেশন ও অ্যাক্সেস পোর্টাল</title>
+    <style>
+        :root {
+            --bg-dark: #0F0F12;
+            --card-bg: rgba(24, 24, 28, 0.85);
+            --neon-pink: #FF007A;
+            --rose-pink: #E91E63;
+            --pastel-pink: #FF80AB;
+            --text-main: #FFFFFF;
+            --text-sub: #A0A0AB;
+            --border-glow: rgba(255, 0, 122, 0.35);
+            --gold-accent: #FF9900;
+            --error-red: #FF3B30;
+            --success-green: #34C759;
         }
-      } catch(e) {
-        alert("সার্ভার কানেকশন এরর!");
-      }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+            background-image: radial-gradient(circle at top right, rgba(255, 0, 122, 0.12), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(233, 30, 99, 0.08), transparent 40%);
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 28px 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 0, 122, 0.15);
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .lang-select {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .brand-section {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .svg-logo-wrapper {
+            display: inline-block;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 12px rgba(255, 153, 0, 0.4));
+        }
+
+        .brand-title {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(45deg, #FFFFFF, var(--pastel-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tab-wrapper {
+            display: flex;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-item {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            color: var(--text-sub);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .tab-item.active {
+            color: var(--text-main);
+            background: linear-gradient(135deg, var(--neon-pink), var(--rose-pink));
+            box-shadow: 0 4px 12px rgba(255, 0, 122, 0.35);
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-bottom: 6px;
+        }
+
+        .input-field-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 0 12px;
+        }
+
+        .country-dropdown {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 13px;
+            padding: 12px 4px 12px 0;
+            outline: none;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            margin-right: 8px;
+        }
+
+        .country-dropdown option {
+            background-color: var(--bg-dark);
+        }
+
+        .custom-input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-main);
+            padding: 12px 0;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .pwd-toggle-icon {
+            cursor: pointer;
+            user-select: none;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .terms-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 22px;
+            font-size: 12px;
+            color: var(--text-sub);
+        }
+
+        .terms-wrapper input[type="checkbox"] {
+            accent-color: var(--neon-pink);
+            width: 16px;
+            height: 16px;
+        }
+
+        .terms-wrapper a {
+            color: var(--pastel-pink);
+            text-decoration: none;
+        }
+
+        .btn-submit-action {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--neon-pink), var(--rose-pink));
+            color: var(--text-main);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(255, 0, 122, 0.4);
+        }
+
+        .login-link-box {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 13px;
+            color: var(--text-sub);
+        }
+
+        .login-link-box a {
+            color: var(--neon-pink);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 10px;
+            color: #FFFFFF;
+            font-size: 13px;
+            font-weight: 500;
+            display: none;
+            z-index: 2000;
+        }
+        .toast-notification.error { background: var(--error-red); }
+        .toast-notification.success { background: var(--success-green); }
+    </style>
+</head>
+<body>
+
+<div id="toast" class="toast-notification"></div>
+
+<div class="auth-container">
+    <div class="header-bar">
+        <button class="btn-back">← ব্যাক</button>
+        <select class="lang-select">
+            <option>🇧🇩 বাংলা</option>
+            <option>🇺🇸 English</option>
+        </select>
+    </div>
+
+    <div class="brand-section">
+        <div class="svg-logo-wrapper">
+            <svg width="88" height="88" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="46" fill="#0F0F12" stroke="#FF9900" stroke-width="3"/>
+                <path d="M50 14 L58 28 L74 28 L62 38 L66 54 L50 44 L34 54 L38 38 L26 28 L42 28 Z" fill="#FF9900"/>
+                <path d="M28 48 L50 38 L72 48 L68 74 L50 82 L32 74 Z" fill="url(#pinkGrad)" stroke="#FF007A" stroke-width="1.5"/>
+                <text x="50" y="64" font-family="Arial, sans-serif" font-weight="900" font-size="15" fill="#FFFFFF" text-anchor="middle">BDX</text>
+                <text x="50" y="93" font-family="Arial, sans-serif" font-weight="800" font-size="9" fill="#FF9900" text-anchor="middle">BDXbet</text>
+                <defs>
+                    <linearGradient id="pinkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#FF007A;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#E91E63;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
+        <div class="brand-title">BDXbet অ্যাকাউন্ট খুলুন</div>
+    </div>
+
+    <div class="tab-wrapper">
+        <button type="button" class="tab-item active" id="phoneTab" onclick="toggleAuthMode('phone')">ফোন দিয়ে রেজিস্টার</button>
+        <button type="button" class="tab-item" id="emailTab" onclick="toggleAuthMode('email')">ইমেইল দিয়ে রেজিস্টার</button>
+    </div>
+
+    <form id="registrationForm" onsubmit="processRegistration(event)">
+        <div id="phoneSection" class="input-group">
+            <label class="input-label">মোবাইল নম্বর</label>
+            <div class="input-field-wrapper">
+                <select class="country-dropdown" id="countryCode">
+                    <option value="+880">🇧🇩 +880</option>
+                    <option value="+91">🇮🇳 +91</option>
+                </select>
+                <input type="tel" id="userPhone" class="custom-input" placeholder="1700000000">
+            </div>
+        </div>
+
+        <div id="emailSection" class="input-group" style="display: none;">
+            <label class="input-label">ইমেইল ঠিকানা</label>
+            <div class="input-field-wrapper">
+                <input type="email" id="userEmail" class="custom-input" placeholder="user@bdxbet.com">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">পাসওয়ার্ড লিখুন</label>
+            <div class="input-field-wrapper">
+                <input type="password" id="password" class="custom-input" placeholder="••••••••" required>
+                <span class="pwd-toggle-icon" onclick="switchPasswordVisibility('password', this)">👁️</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">পুনরায় পাসওয়ার্ড লিখুন</label>
+            <div class="input-field-wrapper" id="confirmPasswordWrapper">
+                <input type="password" id="confirmPassword" class="custom-input" placeholder="••••••••" required>
+                <span class="pwd-toggle-icon" onclick="switchPasswordVisibility('confirmPassword', this)">👁️</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">আমন্ত্রণ / রেফারেল কোড (ঐচ্ছিক)</label>
+            <div class="input-field-wrapper">
+                <input type="text" id="referralCode" class="custom-input" placeholder="BDX2026">
+            </div>
+        </div>
+
+        <div class="terms-wrapper">
+            <input type="checkbox" id="acceptTerms" required>
+            <label for="acceptTerms">আমি <a href="#">প্রাইভেসি পলিসি ও শর্তাবলী</a> গ্রহণ করছি।</label>
+        </div>
+
+        <button type="submit" class="btn-submit-action" id="submitBtn">রেজিস্টার নিশ্চিত করুন</button>
+    </form>
+
+    <div class="login-link-box">
+        পূর্বেই অ্যাকাউন্ট আছে? <a href="#">লগইন করুন</a>
+    </div>
+</div>
+
+<script>
+    let currentAuthMode = 'phone';
+
+    function toggleAuthMode(mode) {
+        currentAuthMode = mode;
+        const phoneSec = document.getElementById('phoneSection');
+        const emailSec = document.getElementById('emailSection');
+        const pTab = document.getElementById('phoneTab');
+        const eTab = document.getElementById('emailTab');
+
+        if (mode === 'phone') {
+            phoneSec.style.display = 'block';
+            emailSec.style.display = 'none';
+            pTab.classList.add('active');
+            eTab.classList.remove('active');
+        } else {
+            phoneSec.style.display = 'none';
+            emailSec.style.display = 'block';
+            eTab.classList.add('active');
+            pTab.classList.remove('active');
+        }
     }
-  </script>
+
+    function switchPasswordVisibility(fieldId, element) {
+        const targetField = document.getElementById(fieldId);
+        if (targetField.type === 'password') {
+            targetField.type = 'text';
+            element.textContent = '🙈';
+        } else {
+            targetField.type = 'password';
+            element.textContent = '👁️';
+        }
+    }
+
+    function displayToast(msg, status) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.className = `toast-notification ${status}`;
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    }
+
+    function processRegistration(event) {
+        event.preventDefault();
+        const pVal = document.getElementById('password').value;
+        const cpVal = document.getElementById('confirmPassword').value;
+
+        if (pVal !== cpVal) {
+            displayToast("পাসওয়ার্ড দুটি মিলছে না।", "error");
+            return;
+        }
+
+        // লাইভ UI রেসপন্স (কোনো সার্ভার কানেকশন ছাড়াই স্মুথলি চলবে)
+        displayToast("রেজিস্ট্রেশন সফল হয়েছে!", "success");
+        document.getElementById('submitBtn').innerText = "সফল হয়েছে ✔";
+    }
+</script>
 </body>
-</html>
+                  </html>
+                  
