@@ -11,33 +11,29 @@ const path = require('path');
 const app = express();
 
 // Security Headers
-app.use(helmet({
-    contentSecurityPolicy: false
-}));
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(express.json());
 
 // CORS Setup
 const allowedOrigin = process.env.ALLOWED_ORIGIN || '*';
-app.use(cors({
-    origin: allowedOrigin,
-    optionsSuccessStatus: 200
-}));
+app.use(cors({ origin: allowedOrigin, optionsSuccessStatus: 200 }));
 
-// Serve Static Frontend Files from 'public' directory
+// Static Files
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Rate Limiting
 const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 150,
-    message: { success: false, message: "অতিরিক্ত রিকোয়েস্ট পাঠানো হয়েছে। কিছু সময় পর চেষ্টা করুন।" }
+    message: { success: false, message: "অতিরিক্ত রিকোয়েস্ট পাঠানো হয়েছে।" }
 });
 app.use('/api/', apiLimiter);
 
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET || 'BDXBET_DEFAULT_SECRET_KEY';
-const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://bdxbet_admin:SecurePass2026@cluster0.live.mongodb.net/bdxbet_prod?retryWrites=true&w=majority';
+const JWT_SECRET = process.env.JWT_SECRET || 'BDXBET_SUPER_SECRET_KEY';
 
+// Standard working URI or fallback
+const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/bdxbet_db";
 
 // Schemas
 const UserSchema = new mongoose.Schema({
@@ -65,41 +61,31 @@ const Transaction = mongoose.model('Transaction', TransactionSchema);
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    if (!token) return res.status(401).json({ success: false, message: "অ্যাক্সেস ডিনাইড! টোকেন অনুপস্থিত।" });
+    if (!token) return res.status(401).json({ success: false, message: "টোকেন অনুপস্থিত।" });
 
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
-        if (err) return res.status(403).json({ success: false, message: "অকার্যকর বা মেয়াদোত্তীর্ণ টোকেন।" });
+        if (err) return res.status(403).json({ success: false, message: "অকার্যকর টোকেন।" });
         req.user = decoded;
         next();
     });
 };
 
-// Auth Controllers
+// Routes
 app.post('/api/v1/auth/register', async (req, res) => {
     try {
         const { phoneOrEmail, password, referralCode } = req.body;
-        if(!phoneOrEmail || !password) {
-            return res.status(400).json({ success: false, message: "সকল তথ্য সঠিকভাবে পূরণ করুন।" });
-        }
+        if(!phoneOrEmail || !password) return res.status(400).json({ success: false, message: "তথ্য অসম্পূর্ণ।" });
         
         const existingUser = await User.findOne({ phoneOrEmail });
-        if (existingUser) {
-            return res.status(400).json({ success: false, message: "এই ইমেইল বা ফোন নম্বরটি পূর্বেই ব্যবহৃত হয়েছে।" });
-        }
+        if (existingUser) return res.status(400).json({ success: false, message: "ব্যবহারকারী পূর্বেই বিদ্যমান।" });
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        const newUser = new User({
-            phoneOrEmail,
-            password: hashedPassword,
-            referralCode
-        });
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = new User({ phoneOrEmail, password: hashedPassword, referralCode });
 
         await newUser.save();
-        res.status(201).json({ success: true, message: "অ্যাকাউন্ট সফলভাবে নিবন্ধিত হয়েছে।" });
+        res.status(201).json({ success: true, message: "অ্যাকাউন্ট তৈরি সফল হয়েছে।" });
     } catch (err) {
-        res.status(500).json({ success: false, message: "ইন্টারনাল সার্ভার ত্রুটি!", error: err.message });
+        res.status(500).json({ success: false, message: "সার্ভার ত্রুটি!", error: err.message });
     }
 });
 
@@ -107,15 +93,10 @@ app.post('/api/v1/auth/login', async (req, res) => {
     try {
         const { phoneOrEmail, password } = req.body;
         const user = await User.findOne({ phoneOrEmail });
-
-        if (!user) {
-            return res.status(400).json({ success: false, message: "ব্যবহারকারী পাওয়া যায়নি।" });
-        }
+        if (!user) return res.status(400).json({ success: false, message: "ব্যবহারকারী পাওয়া যায়নি।" });
 
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ success: false, message: "ভুল পাসওয়ার্ড প্রদান করা হয়েছে।" });
-        }
+        if (!isMatch) return res.status(400).json({ success: false, message: "ভুল পাসওয়ার্ড।" });
 
         const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
         res.status(200).json({
@@ -124,7 +105,7 @@ app.post('/api/v1/auth/login', async (req, res) => {
             user: { id: user._id, phoneOrEmail: user.phoneOrEmail, balance: user.balance, role: user.role }
         });
     } catch (err) {
-        res.status(500).json({ success: false, message: "সার্ভার প্রসেসিং ব্যর্থ হয়েছে।" });
+        res.status(500).json({ success: false, message: "লগইন ব্যর্থ হয়েছে।" });
     }
 });
 
@@ -133,46 +114,35 @@ app.get('/api/v1/user/profile', verifyToken, async (req, res) => {
         const user = await User.findById(req.user.id).select('-password');
         res.status(200).json({ success: true, user });
     } catch (err) {
-        res.status(500).json({ success: false, message: "ইউজার ডাটা লোড করতে ব্যর্থ।" });
+        res.status(500).json({ success: false, message: "ডাটা লোড করতে ব্যর্থ।" });
     }
 });
 
-// Wallet Controllers
 app.post('/api/v1/wallet/deposit', verifyToken, async (req, res) => {
     try {
         const { gateway, amount, trxId } = req.body;
-        if (!amount || Number(amount) <= 0 || !trxId || !gateway) {
-            return res.status(400).json({ success: false, message: "সঠিক তথ্য ও পরিমাণ প্রদান করুন।" });
-        }
+        if (!amount || Number(amount) <= 0 || !trxId) return res.status(400).json({ success: false, message: "সঠিক তথ্য দিন।" });
 
         const existingTrx = await Transaction.findOne({ trxId: trxId.trim() });
-        if(existingTrx) {
-            return res.status(400).json({ success: false, message: "এই ট্রানজেকশন আইডিটি পূর্বেই জমা দেওয়া হয়েছে।" });
-        }
+        if(existingTrx) return res.status(400).json({ success: false, message: "এই TrxID ব্যবহৃত হয়েছে।" });
 
-        const newTrx = new Transaction({
-            userId: req.user.id,
-            gateway,
-            amount: Number(amount),
-            trxId: trxId.trim()
-        });
-
+        const newTrx = new Transaction({ userId: req.user.id, gateway, amount: Number(amount), trxId: trxId.trim() });
         await newTrx.save();
-        res.status(200).json({ success: true, message: "ডিপোজিট আবেদন জমার জন্য ধন্যবাদ। এডমিন রিভিউ করবে।" });
+        res.status(200).json({ success: true, message: "ডিপোজিট আবেদন গৃহীত হয়েছে।" });
     } catch (err) {
-        res.status(500).json({ success: false, message: "ট্রানজেকশন প্রসেসিং ব্যর্থ হয়েছে।" });
+        res.status(500).json({ success: false, message: "প্রসেসিং ব্যর্থ।" });
     }
 });
 
-// Wildcard Route
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start Server
-mongoose.connect(MONGO_URI)
-    .then(() => {
-        app.listen(PORT, () => console.log(`BDXbet Live Engine running on Port ${PORT}`));
-    })
-    .catch(err => console.error("Database Connection Error:", err));
-          
+// Start Express App Immediately, then connect DB
+app.listen(PORT, () => {
+    console.log(`BDXbet Engine running on Port ${PORT}`);
+    mongoose.connect(MONGO_URI)
+        .then(() => console.log("MongoDB Connected Successfully"))
+        .catch(err => console.error("Database connection warning (Server running regardless):", err.message));
+});
+    
