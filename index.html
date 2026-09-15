@@ -372,7 +372,24 @@
         setTimeout(() => { toast.style.display = 'none'; }, 3000);
     }
 
-    function processRegistration(event) {
+        function processRegistration(event) {
+        event.preventDefault();
+        const pVal = document.getElementById('password').value;
+        const cpVal = document.getElementById('confirmPassword').value;
+
+        if (pVal !== cpVal) {
+            displayToast("পাসওয়ার্ড দুটি মিলছে না।", "error");
+            return;
+        }
+
+        displayToast("রেজিস্ট্রেশন সফল হয়েছে! ড্যাশবোর্ডে নিয়ে যাওয়া হচ্ছে...", "success");
+        document.getElementById('submitBtn').innerText = "সফল হয়েছে ✔";
+
+        setTimeout(() => {
+            window.location.href = "dashboard.html";
+        }, 1200);
+        }
+    
         event.preventDefault();
         const pVal = document.getElementById('password').value;
         const cpVal = document.getElementById('confirmPassword').value;
